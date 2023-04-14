@@ -19,10 +19,16 @@ variable "vault_db_path" {
   description = "Vault database secret engine mount path."
 }
 
-variable "allowed_roles" {
+variable "vault_db_role" {
+  type        = string
+  description = "Vault database role for this demo."
+  default     = "demo"
+}
+
+variable "vault_db_role_creation_statements" {
   type        = list(string)
-  description = "List of allowed roles for snowflake database connection."
-  default     = ["demo"]
+  description = "Snowflake SQL statement to create dynamic user."
+  default     = ["CREATE USER {{name}} PASSWORD = '{{password}}' DAYS_TO_EXPIRY = {{expiration}};"]
 }
 
 variable "default_ttl" {

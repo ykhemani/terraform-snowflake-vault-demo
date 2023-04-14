@@ -23,7 +23,7 @@ resource "vault_mount" "db" {
 resource "vault_database_secret_backend_connection" "snowflake" {
   backend       = vault_mount.db.path
   name          = "snowflake"
-  allowed_roles = var.allowed_roles
+  allowed_roles = [var.vault_db_role]
 
   snowflake {
     connection_url = var.snowflake_connection_url
@@ -34,9 +34,9 @@ resource "vault_database_secret_backend_connection" "snowflake" {
 
 resource "vault_database_secret_backend_role" "demo_role" {
   backend             = vault_mount.db.path
-  name                = "demo"
+  name                = var.vault_db_role
   db_name             = vault_database_secret_backend_connection.snowflake.name
-  creation_statements = ["CREATE USER {{name}} PASSWORD = '{{password}}' DAYS_TO_EXPIRY = {{expiration}};"]
+  creation_statements = var.vault_db_role_creation_statements
   default_ttl         = var.default_ttl
   max_ttl             = var.max_ttl
 }
